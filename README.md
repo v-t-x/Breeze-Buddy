@@ -18,5 +18,3 @@ Temperature-controlled wearable cooling device built with Arduino.
 - Circuit design
 - Sensor integration
 
-## Images
-<img width="638" height="481" alt="image" src="https://github.com/user-attachments/assets/8a645260-ff0f-49ec-97bf-63628ea6d278" />
