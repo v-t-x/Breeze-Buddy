@@ -1,0 +1,63 @@
+// C++ code
+//
+// Location of the buttons 
+int red1 = 11;
+int blue1 = 10;
+int green1 = 9;
+
+int motorPin = 2;     // TIP120 base control
+int tempPin = A0;
+int buttonPin = 8;
+
+bool systemOn = false; // remembers ON/OFF state
+
+void setup()
+{
+  pinMode(red1, OUTPUT);
+  pinMode(blue1, OUTPUT);
+  pinMode(green1, OUTPUT);
+
+  pinMode(motorPin, OUTPUT);
+  pinMode(buttonPin, INPUT); 
+  Serial.begin(9600);
+}
+
+float readSmoothedTemp() {
+  const int samples = 20;    // number of readings to average
+  long total = 0;
+
+  for (int i = 0; i < samples; i++) {
+    total += analogRead(tempPin);
+    delay(5);  // small delay to reduce noise
+  }
+
+  int avgValue = total / samples;
+  float voltage = avgValue * (5.0 / 1023.0);
+  float tempC = (voltage - 0.5) * 100.0;
+
+  tempC -= 10.0;   // apply offset since readings were too high
+
+  return tempC;
+}
+
+void loop()
+{
+  if (digitalRead(buttonPin) == HIGH) {
+    systemOn = !systemOn;
+    delay(200);  
+  }
+
+  if (!systemOn) {
+    digitalWrite(motorPin, LOW);
+    return;
+  }
+
+  float tempC = readSmoothedTemp();
+  Serial.println(tempC);
+
+  if (tempC > 37.0) {
+    digitalWrite(motorPin, HIGH);  
+  } else {
+    digitalWrite(motorPin, LOW);   
+  }
+}
